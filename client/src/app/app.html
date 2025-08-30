@@ -1,8 +1,8 @@
-
 <head>
 </head>
+
 <body>
-    <app-nav/>
+    <app-nav />
     <!-- <div class="cards bg-base-100 shadow-xl w-1/2 mx-auto mt-24 p-10">
         <div class="card-body">
             <h2 class="card-title">{{title}}</h2>
@@ -23,5 +23,13 @@
         </div>
     </div> -->
     <!-- <app-home [membersFromApp]="members()"/> -->
-    <app-home/>
+    <!-- <app-home/> -->
+    <!-- <div class="mt-24 container mx-auto">
+        <router-outlet></router-outlet>
+    </div> -->
+    <!-- <div [ngClass]="{'container mx-auto': !(router.url === '/')}">
+    </div> -->
+    <div [class.mt-24]="router.url === '/'" [class.container]="router.url === '/'" [class.mx-auto]="router.url === '/'">
+        <router-outlet></router-outlet>
+    </div>
 </body>
