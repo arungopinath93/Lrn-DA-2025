@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    // [Authorize]
+  
     public class MembersController(IMemberRepository memberRepository) : BaseApiController
     {
 
-        // Example action method
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<AppUser>>> GetMembers()
         {
@@ -17,6 +17,7 @@ namespace API.Controllers
             return Ok(members);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<AppUser>> GetMember(string id)
         {
@@ -28,6 +29,7 @@ namespace API.Controllers
             return Ok(member);
         }
 
+        [Authorize]
         [HttpGet("{memberId}/photos")]
         public async Task<ActionResult<IReadOnlyList<Photo>>> GetPhotosOfMember(string memberId)
         {

@@ -8,11 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services;
 
-public class TokenService(IConfiguration congig) : ITokenService
+public class TokenService(IConfiguration config) : ITokenService
 {
     public string CreateToken(AppUser user)
     {
-        var tokenKey = congig["TokenKey"] ?? throw new ArgumentNullException("TokenKey is not configured");
+        var tokenKey = config["TokenKey"] ?? throw new ArgumentNullException("TokenKey is not configured");
         if (tokenKey.Length < 64)
         {
             throw new ArgumentException("TokenKey must be at least 64 characters long");

@@ -61,6 +61,20 @@ namespace API.Controllers
             return Ok(user.UserDto(tokenService));
         }
 
+        [HttpGet("update/imageUrl/{id}")]
+        public async Task<ActionResult> Update(string id, [FromQuery] string ImageUrl)
+        {
+            var user = await context.Users.SingleOrDefaultAsync(x => x.Id == id);
+            if (user == null) return NotFound("User not found");
+
+          
+            user.ImageUrl = ImageUrl;
+
+            context.Users.Update(user);
+            await context.SaveChangesAsync();
+
+            return Ok("ImageUrl updated successfully");
+        }
         private async Task<bool> EmailExists(string email)
         {
             return await context.Users.AnyAsync(x => x.Email.ToLower() == email.ToLower());

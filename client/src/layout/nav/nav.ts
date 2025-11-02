@@ -1,10 +1,11 @@
-import { afterNextRender, Component, Inject, signal } from '@angular/core';
+import { afterNextRender, Component, Inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../../core/service/account-service';
 import { ToastService } from '../../core/service/toast-service';
 import { inject, Injectable } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { skip } from 'rxjs';
+import { single, skip } from 'rxjs';
+import { themes } from '../theme';
 
 @Component({
   selector: 'app-nav',
@@ -16,11 +17,28 @@ import { skip } from 'rxjs';
   templateUrl: './nav.html',
   styleUrl: './nav.css'
 })
-export class Nav {
+export class Nav implements OnInit {
+  
   protected accountService = inject(AccountService);
   protected router = inject(Router);
   protected toast = inject(ToastService);
   protected creds: any = {};
+
+  protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'light');
+  protected themes = themes;
+
+  ngOnInit(): void {
+    document.documentElement.setAttribute('data-theme', this.selectedTheme());
+  }
+
+  handleSelectedTheme(theme: string) {
+    this.selectedTheme.set(theme);
+    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    const elem = document.activeElement as HTMLElement;
+    if(elem) elem.blur();
+  }
+  
   // protected isLoggedIn = signal(false);
   login() {
     this.accountService.loginUser(this.creds).subscribe({

@@ -1,1 +1,6 @@
-<p>member-list works!</p>
+<div class="grid grid-cols-5 gap-6" style="margin-top: 8% !important;">
+    @for (member of members$ | async; track member.id) {
+        <!-- <div>{{member.displayName}}</div> -->
+        <app-member-card [member]="member"></app-member-card>
+    }
+</div>

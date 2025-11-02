@@ -3,6 +3,9 @@ using API.Interface;
 using API.Middleware;
 using API.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,18 @@ builder.Services.AddCors();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                builder.Configuration["TokenKey"] ?? throw new ArgumentNullException("TokenKey is not configured"))),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,7 +38,8 @@ app.UseCors(x=>
     x.AllowAnyHeader()
      .AllowAnyMethod()
      .WithOrigins("https://localhost:4200", "http://localhost:4200"));
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
