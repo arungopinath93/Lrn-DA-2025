@@ -8,6 +8,9 @@
             </svg>
             <h3 class=" font-semibold uppercase">Dating App</h3>
         </a>
+        @if(busyService.busyRequestCount() > 0){
+            <span class="loading loading-spinner loading-sm text-white"></span>
+        }
         <nav class="flex gap-3 my-2 uppercase text-lg text-white">
             @if(accountService.currentUser()){
             <a routerLink="/members" routerLinkActive="text-accent">Matches</a>
@@ -43,8 +46,8 @@
                     <img [src]="user.imageUrl || '/user.png'" alt="User Avatar" class="w-8 h-8 rounded-full">
                     <span class="ml-2">{{accountService.currentUser()?.displayName}}</span>
                 </div>
-                <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                    <li><a>Edit Profile</a></li>
+                <ul tabindex="0" class="dropdown-content z-50 menu bg-base-100 rounded-box w-52 p-2 shadow-sm">
+                    <li><a routerLink="/members/{{user.id}}">Edit Profile</a></li>
                     <li><a (click)="logout()">Logout</a></li>
                 </ul>
             </div>

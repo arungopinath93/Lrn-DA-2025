@@ -6,6 +6,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { single, skip } from 'rxjs';
 import { themes } from '../theme';
+import { BusyService } from '../../core/service/busy-service';
 
 @Component({
   selector: 'app-nav',
@@ -23,7 +24,7 @@ export class Nav implements OnInit {
   protected router = inject(Router);
   protected toast = inject(ToastService);
   protected creds: any = {};
-
+  protected busyService = inject(BusyService);
   protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'light');
   protected themes = themes;
 

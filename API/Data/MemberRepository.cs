@@ -7,6 +7,11 @@ namespace API.Data;
 
 public class MemberRepository(AppDbContext context) : IMemberRepository
 {
+    public async Task<Member?> GetMemberForUpdate(string id)
+    {
+        return await context.Members.Include(x => x.User).SingleOrDefaultAsync(x => x.Id == id);
+    }
+
     public async Task<IReadOnlyList<Member>> GetMembersAsync()
     {
         // return await context.Members.Include(x=>x.Photos).ToListAsync();
@@ -28,7 +33,16 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
 
     public async Task<bool> SaveAllAsync()
     {
-        return await context.SaveChangesAsync() > 0;
+        try
+        {
+            return await context.SaveChangesAsync() > 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred during the delay: {ex.Message}");
+            return false;
+        }
+        
     }
 
     public void Update(Member member)
