@@ -2,21 +2,106 @@
     <div class="card-title justify-center text-3xl text-primary">
         Sing Up
     </div>
-    <div class="card-body w-full">
+    <!-- <div class="card-body w-full">
         <form #registerForm="ngForm" class="flex flex-col gap-4 w-full" (ngSubmit)="register()">
             <input type="text" class="input w-full" name="email" [(ngModel)]="creds.email" placeholder="Email" required>
             <input type="text" class="input w-full" name="displayName" [(ngModel)]="creds.displayName" placeholder="Dispaly Name" required>
             <input type="password" class="input w-full" name="password" [(ngModel)]="creds.password" placeholder="password" required>
-            <!-- <select class="select w-full">
-                <option value="" disabled selected>Select a Member</option>
-                @for (member of memberFromHome(); track $index) {
-                    <option [value]="member.id">{{member.displayName}}</option>
-                }
-            </select> -->
             <div class="flex items-center justify-end gap-3">
                  <button class="btn" type="button" (click)="cancel()">Cancel</button>
                  <button class="btn btn-primary" type="submit">Register</button>
             </div>
         </form>
+    </div> -->
+    <div class="card-body w-full">
+        <ul class="steps">
+            <li class="step step-primary">Credentials</li>
+            <li class="step" [class.step-primary]="currentStep() === 2">Profile</li>
+        </ul>
+        @if(currentStep() === 1){
+        <form [formGroup]="registerForm" class="flex flex-col gap-4 w-full steps">
+            <!-- <label class="floating-label">
+                <span>Email</span>
+                <input type="text" class="input w-full" name="email" formControlName="email" placeholder="Email"
+                    required>
+            </label> -->
+            <app-text-input class="mt-2" label="Email" name="email" formControlName="email" />
+            <!-- <label class="floating-label text-left">
+                <span>Display Name</span>
+                <input type="text" 
+                    class="input w-full"
+                    [class.input-error]="registerForm.controls['displayName'].invalid && 
+                    registerForm.controls['displayName'].touched"
+                    name="displayName" 
+                    formControlName="displayName"
+                    placeholder="Display Name" required>
+                @if(registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched){
+                    <div class="validator-hint text-error text-xs">Display Name is required</div>
+                }
+            </label> -->
+            <app-text-input label="Display Name" name="displayName" formControlName="displayName" />
+            <!-- <label class="floating-label">
+                <span>Password</span>
+                <input type="password" class="input w-full" name="password" formControlName="password"
+                    placeholder="Password" required>
+            </label>
+            <label class="floating-label">
+                <span>Confirm Password</span>
+                <input type="password" class="input w-full" name="confirmPassword" formControlName="confirmPassword"
+                    placeholder="Confirm Password" required>
+            </label> -->
+            <app-text-input label="Password" name="password" type="password" formControlName="password" />
+            <app-text-input label="Confirm Password" name="confirmPassword" type="password"
+                formControlName="confirmPassword" />
+            <div class="flex items-center justify-end gap-3">
+                <button class="btn" type="button" (click)="cancel()">Cancel</button>
+                <!-- <button [disabled]="!registerForm.valid" class="btn btn-primary" type="submit">Register</button> -->
+                <button [disabled]="!registerForm.valid" (click)="nextStep()" class="btn btn-primary"
+                    type="button">Next</button>
+            </div>
+        </form>
+        }
+        @if(currentStep() === 2){
+        <form [formGroup]="profileForm" class="flex flex-col gap-4 w-full steps">
+            <!-- <app-text-input class="mt-2" label="Gender" name="gender" formControlName="gender" /> -->
+             <div class="flex items-center gap-4">
+                <div class="font-semibold">Gender : </div>
+                <label class="flex gap-3 items-center">
+                    <span>Male</span>
+                    <input type="radio" name="gender" formControlName="gender" value="male"
+                        class="radio radio-primary" />
+                </label>
+                <label class="flex gap-3 items-center">
+                    <span>Female</span>
+                    <input type="radio" name="gender" formControlName="gender" value="female"
+                        class="radio radio-primary" />
+                </label>
+             </div>
+            <app-text-input [maxDate]="getMaxDate()" type="date" label="Date of Birth" name="dateOfBirth" formControlName="dateOfBirth" />
+            <app-text-input label="City" name="city" formControlName="city" />
+            <app-text-input label="Country" name="country" formControlName="country" />
+            <div class="flex items-center justify-end gap-3">
+                <button class="btn" type="button" (click)="prevStep()">Back</button>
+                <button [disabled]="!profileForm.valid" (click)="register()" class="btn btn-primary"
+                    type="button">Register</button>
+            </div>
+        </form>
+        }
+    </div>
+
+    @if(validationErrors().length > 0){
+        <div class="mt-5 flex bg-grey-200 rounded-2xl w-1/2 p-3 mx-auto">
+            <ul class="flex flex-col text-error space-y-1">
+                @for(error of validationErrors(); track $index){
+                    <li>{{ error }}</li>
+                }
+            </ul>
+        </div>
+    }
+    <div class="flex flex-col w-full mockup-code text-lg">
+        <div>From Value : {{ registerForm.value | json }}</div>
+        <div>From Value : {{ registerForm.status | json }}</div>
+        <div>From Value : {{ profileForm.value | json }}</div>
+        <div>From Value : {{ profileForm.status | json }}</div>
     </div>
 </div>
