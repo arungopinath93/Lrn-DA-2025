@@ -1,18 +1,43 @@
-@if(paginatedResponse$ | async; as paginatedResponse) {
-    @if(paginatedResponse.metadata; as metadata) {
-        <app-paginator 
-            [pageNumber]="metadata.currentPage" 
-            [pageSize]="metadata.pageSize" 
-            [totalCount]="metadata.totalCount"
-            [totalPages]="metadata.totalPages"
-            (pageChange)="onPageChange($event)"></app-paginator>
-    }
-    @if(paginatedResponse.items; as members) {
-        <div class="grid grid-cols-5 gap-6">
-        @for (member of members; track member.id) {
-            <!-- <div>{{member.displayName}}</div> -->
-            <app-member-card [member]="member"></app-member-card>
-        }
+<!-- @if(paginatedResponse$ | async; as paginatedResponse) { -->
+@if(paginatedResponse(); as paginatedResponse) 
+{
+    <div class="flex flex-col w-full margin-t-4">
+        <div class="flex items-center justify-between">
+            <div class="flex gap-3">
+                <button (click)="openFilterModal()" class="btn btn-primary">Select Filter</button>
+                <button (click)="resetFilters()" class="btn btn-neutral">Reset Filters</button>
+                <div class="text-lg bg-base-100 py-2 px-4 border-1 rounded-lg text-primary capitalize">
+                    {{displayMessages}}
+                </div>
+            </div>
+            @if(paginatedResponse.metadata; as metadata) 
+            {
+                <app-paginator 
+                    [pageNumber]="metadata.currentPage" 
+                    [pageSize]="metadata.pageSize"
+                    [totalCount]="metadata.totalCount" 
+                    [totalPages]="metadata.totalPages"
+                    (pageChange)="onPageChange($event)">
+                </app-paginator>
+            }
         </div>
-    }
-} 
+        @if(paginatedResponse.items; as members) 
+        {
+            <div class="grid grid-cols-5 gap-6">
+                @for (member of members; track member.id) 
+                {
+                <!-- <div>{{member.displayName}}</div> -->
+                    <app-member-card [member]="member"></app-member-card>
+                }
+            </div>
+        }
+    </div>
+
+    
+}
+<app-filter-modal 
+    #filterModal
+    [hidden]="!paginatedResponse()" 
+    (submitData)="onFilterSubmit($event)"
+    (closeModal)="onFilterClose()">
+</app-filter-modal>
